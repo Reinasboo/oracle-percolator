@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "installCommand": "cd oracle-sentinel/frontend && pnpm install",
-  "buildCommand": "cd oracle-sentinel/frontend && pnpm build",
+  "installCommand": "cd oracle-sentinel/frontend && npm install",
+  "buildCommand": "cd oracle-sentinel/frontend && npm run build",
   "outputDirectory": "oracle-sentinel/frontend/dist"
 }
