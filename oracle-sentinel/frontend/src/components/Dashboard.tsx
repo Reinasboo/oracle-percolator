@@ -306,9 +306,9 @@ export default function Dashboard() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      <section className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-start">
-        <div className="flex-1 max-w-3xl rounded-[28px] border border-white/8 bg-[radial-gradient(circle_at_top_left,rgba(0,217,255,0.14),transparent_30%),linear-gradient(180deg,rgba(10,14,39,0.92),rgba(10,14,39,0.68))] p-6 shadow-[0_30px_100px_rgba(0,0,0,0.35)] backdrop-blur-xl">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-start">
+      <section className="grid grid-cols-1 gap-4 lg:grid-cols-[1.3fr_0.7fr]">
+        <div className="rounded-[28px] border border-white/8 bg-[radial-gradient(circle_at_top_left,rgba(0,217,255,0.14),transparent_30%),linear-gradient(180deg,rgba(10,14,39,0.92),rgba(10,14,39,0.68))] p-6 shadow-[0_30px_100px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl space-y-4">
               <div className="inline-flex items-center gap-2 rounded-full border border-[rgba(0,217,255,0.18)] bg-[rgba(0,217,255,0.08)] px-3 py-1 text-xs uppercase tracking-[0.24em] text-[#7cecff]">
                 Oracle Sentinel demo
@@ -319,7 +319,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="flex-shrink-0 w-[420px] grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:w-[420px] lg:grid-cols-2 xl:grid-cols-4">
               <div className="rounded-2xl border border-white/8 bg-white/5 px-3 py-3">
                 <div className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Assets</div>
                 <div className="mt-1 text-2xl font-extrabold text-[var(--color-apex)]">{feeds.length}</div>
@@ -340,7 +340,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 w-full lg:max-w-[420px]">
+        <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
           <div className="rounded-[28px] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-5 shadow-[0_12px_40px_rgba(0,0,0,0.18)]">
             <div className="text-xs uppercase tracking-[0.24em] text-slate-400">Selected feed</div>
             <div className="mt-2 text-3xl font-semibold tracking-tight text-white">{selectedFeed?.feed_name ?? 'Live feed'}</div>
