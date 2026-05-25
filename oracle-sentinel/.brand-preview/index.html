@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oracle Sentinel — Brand Palette Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto Mono', 'Inter', sans-serif;
+            background: #000;
+            color: #fff;
+            padding: 32px 16px;
+        }
+
+        .toggle-container {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 48px;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .toggle-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #00f0ff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .palettes-container {
+            display: grid;
+            gap: 80px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .palette-section {
+            display: grid;
+            gap: 24px;
+        }
+
+        .palette-header {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+
+        .palette-name {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .palette-vibe {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+            font-style: italic;
+        }
+
+        .palette-description {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 700px;
+            line-height: 1.6;
+            margin-bottom: 4px;
+        }
+
+        .palette-specs {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .dashboard {
+            display: grid;
+            gap: 20px;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid;
+            background-size: 100% 100%;
+            background-attachment: fixed;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .dashboard-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid;
+            opacity: 0.7;
+        }
+
+        .dashboard-title {
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        @media (min-width: 900px) {
+            .metrics-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .metric-card {
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            opacity: 0.6;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .metric-change {
+            font-size: 11px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            opacity: 0.7;
+        }
+
+        .chart-placeholder {
+            padding: 32px;
+            border-radius: 8px;
+            border: 1px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 180px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-placeholder::before {
+            content: '📊';
+            font-size: 48px;
+            opacity: 0.3;
+        }
+
+        .alert-section {
+            padding: 12px 14px;
+            border-radius: 6px;
+            border-left: 3px solid;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            font-size: 11px;
+        }
+
+        .selector-section {
+            margin-top: 48px;
+            padding: 24px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .selector-section h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .selector-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .selector-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .selector-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .selector-btn.selected {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 16px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Palette-specific CSS Variables */
+
+        /* 1. Cyberpunk Neon */
+        .palette-1 {
+            --background: #0a0a14;
+            --foreground: #f0f0ff;
+            --card: #141428;
+            --card-foreground: #f0f0ff;
+            --primary: #00f0ff;
+            --primary-foreground: #0a0a14;
+            --secondary: #1a1a32;
+            --secondary-foreground: #f0f0ff;
+            --muted: #1a1a32;
+            --muted-foreground: #b0b0c0;
+            --accent: #ff00ff;
+            --accent-foreground: #f0f0ff;
+            --border: #242840;
+            --gradient-primary: linear-gradient(135deg, #00f0ff 0%, #ff00ff 100%);
+            --gradient-accent: linear-gradient(90deg, #ff00ff 0%, #00f0ff 100%);
+            --glow-color: #00f0ff;
+            color-scheme: dark;
+        }
+
+        /* 2. Quantum Protocol */
+        .palette-2 {
+            --background: #0d0817;
+            --foreground: #efe8ff;
+            --card: #161028;
+            --card-foreground: #efe8ff;
+            --primary: #a78bfa;
+            --primary-foreground: #0d0817;
+            --secondary: #1a1428;
+            --secondary-foreground: #efe8ff;
+            --muted: #1a1428;
+            --muted-foreground: #a896b8;
+            --accent: #c4b5fd;
+            --accent-foreground: #0d0817;
+            --border: #2d1f42;
+            --gradient-primary: linear-gradient(135deg, #a78bfa 0%, #6366f1 100%);
+            --gradient-accent: linear-gradient(90deg, #c084fc 0%, #a78bfa 100%);
+            --glow-color: #a78bfa;
+            color-scheme: dark;
+        }
+
+        /* 3. Plasma Analytics */
+        .palette-3 {
+            --background: #110f0a;
+            --foreground: #f6f3ee;
+            --card: #1f1712;
+            --card-foreground: #f6f3ee;
+            --primary: #f5a300;
+            --primary-foreground: #0a0a0a;
+            --secondary: #2a2115;
+            --secondary-foreground: #f6f3ee;
+            --muted: #2a2115;
+            --muted-foreground: #c4a560;
+            --accent: #ff7f00;
+            --accent-foreground: #f6f3ee;
+            --border: #3d3020;
+            --gradient-primary: linear-gradient(135deg, #ff7f00 0%, #f5a300 50%, #ffb84d 100%);
+            --gradient-accent: linear-gradient(90deg, #ffa500 0%, #ffb84d 100%);
+            --glow-color: #ff7f00;
+            color-scheme: dark;
+        }
+
+        /* 4. Neural Net */
+        .palette-4 {
+            --background: #0c0c0c;
+            --foreground: #f5f5f5;
+            --card: #171717;
+            --card-foreground: #f5f5f5;
+            --primary: #22d642;
+            --primary-foreground: #0c0c0c;
+            --secondary: #1f1f1f;
+            --secondary-foreground: #f5f5f5;
+            --muted: #1f1f1f;
+            --muted-foreground: #999999;
+            --accent: #39e75d;
+            --accent-foreground: #0c0c0c;
+            --border: #2d2d2d;
+            --gradient-primary: linear-gradient(135deg, #22d642 0%, #16a34a 100%);
+            --gradient-accent: linear-gradient(90deg, #39e75d 0%, #22d642 100%);
+            --glow-color: #22d642;
+            color-scheme: dark;
+        }
+
+        /* 5. Oracle Nexus */
+        .palette-5 {
+            --background: #0b1220;
+            --foreground: #eff1f5;
+            --card: #141e30;
+            --card-foreground: #eff1f5;
+            --primary: #d4a574;
+            --primary-foreground: #0b1220;
+            --secondary: #1a2540;
+            --secondary-foreground: #eff1f5;
+            --muted: #1a2540;
+            --muted-foreground: #94a5b8;
+            --accent: #e8b999;
+            --accent-foreground: #0b1220;
+            --border: #2d3e54;
+            --gradient-primary: linear-gradient(135deg, #d4a574 0%, #8b5a3c 100%);
+            --gradient-accent: linear-gradient(90deg, #e8b999 0%, #d4a574 100%);
+            --glow-color: #d4a574;
+            color-scheme: dark;
+        }
+
+        /* 6. Void Sentinel */
+        .palette-6 {
+            --background: #0d0620;
+            --foreground: #efe8ff;
+            --card: #17104e;
+            --card-foreground: #efe8ff;
+            --primary: #00d4ff;
+            --primary-foreground: #0d0620;
+            --secondary: #1a0f4d;
+            --secondary-foreground: #efe8ff;
+            --muted: #1a0f4d;
+            --muted-foreground: #9d8db8;
+            --accent: #00e5ff;
+            --accent-foreground: #0d0620;
+            --border: #2d1a6d;
+            --gradient-primary: linear-gradient(135deg, #00d4ff 0%, #6366f1 100%);
+            --gradient-accent: linear-gradient(90deg, #00e5ff 0%, #00d4ff 100%);
+            --glow-color: #00d4ff;
+            color-scheme: dark;
+        }
+
+        .palette-1 .dashboard { 
+            background: linear-gradient(135deg, rgba(10, 10, 20, 0.95) 0%, rgba(20, 20, 40, 0.95) 100%);
+            background-color: var(--background);
+            color: var(--foreground);
+            border-color: var(--border);
+        }
+
+        .palette-2 .dashboard { 
+            background: linear-gradient(135deg, rgba(13, 8, 23, 0.95) 0%, rgba(22, 16, 40, 0.95) 100%);
+            background-color: var(--background);
+            color: var(--foreground);
+            border-color: var(--border);
+        }
+
+        .palette-3 .dashboard { 
+            background: linear-gradient(135deg, rgba(17, 15, 10, 0.95) 0%, rgba(31, 23, 18, 0.95) 100%);
+            background-color: var(--background);
+            color: var(--foreground);
+            border-color: var(--border);
+        }
+
+        .palette-4 .dashboard { 
+            background: linear-gradient(135deg, rgba(12, 12, 12, 0.95) 0%, rgba(23, 23, 23, 0.95) 100%);
+            background-color: var(--background);
+            color: var(--foreground);
+            border-color: var(--border);
+        }
+
+        .palette-5 .dashboard { 
+            background: linear-gradient(135deg, rgba(11, 18, 32, 0.95) 0%, rgba(20, 30, 48, 0.95) 100%);
+            background-color: var(--background);
+            color: var(--foreground);
+            border-color: var(--border);
+        }
+
+        .palette-6 .dashboard { 
+            background: linear-gradient(135deg, rgba(13, 6, 32, 0.95) 0%, rgba(23, 16, 78, 0.95) 100%);
+            background-color: var(--background);
+            color: var(--foreground);
+            border-color: var(--border);
+        }
+
+        .palette-section .dashboard-header {
+            border-bottom-color: var(--border);
+        }
+
+        .palette-section .metric-card {
+            background-color: var(--card);
+            border-color: var(--border);
+            color: var(--card-foreground);
+        }
+
+        .palette-section .metric-label {
+            color: var(--muted-foreground);
+        }
+
+        .palette-section .metric-value {
+            color: var(--primary);
+        }
+
+        .palette-section .chart-placeholder {
+            background-color: var(--card);
+            border-color: var(--border);
+        }
+
+        .palette-section .status-badge {
+            background-color: var(--accent);
+            color: var(--accent-foreground);
+        }
+
+        .palette-section .dashboard-title {
+            color: var(--foreground);
+        }
+
+        .palette-section .dashboard-header {
+            color: var(--foreground);
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .palette-section .alert-section {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-left-color: var(--accent);
+            color: var(--card-foreground);
+        }
+
+        .palette-section .alert-title {
+            color: var(--accent);
+        }
+
+        .text-muted {
+            opacity: 0.6;
+        }
+
+        .text-success {
+            color: var(--primary);
+        }
+
+        .text-warning {
+            color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .palette-name {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="toggle-container">
+        <button class="toggle-btn active" onclick="scrollToPalette(1)">1. Cyberpunk Neon</button>
+        <button class="toggle-btn" onclick="scrollToPalette(2)">2. Quantum Protocol</button>
+        <button class="toggle-btn" onclick="scrollToPalette(3)">3. Plasma Analytics</button>
+        <button class="toggle-btn" onclick="scrollToPalette(4)">4. Neural Net</button>
+        <button class="toggle-btn" onclick="scrollToPalette(5)">5. Oracle Nexus</button>
+        <button class="toggle-btn" onclick="scrollToPalette(6)">6. Void Sentinel</button>
+    </div>
+
+    <div class="header">
+        <h1>Oracle Sentinel</h1>
+        <p>Futuristic oracle intelligence & manipulation detection dashboard — choose your brand palette</p>
+    </div>
+
+    <div class="palettes-container">
+        <!-- Palette 1: Cyberpunk Neon -->
+        <div class="palette-section palette-1" id="palette-1">
+            <div>
+                <div class="palette-header">
+                    <span class="palette-name">Cyberpunk Neon</span>
+                    <span class="palette-vibe">electric · bold · chrome</span>
+                </div>
+                <div class="palette-description">
+                    High-octane hacker aesthetic. Neon cyan-magenta contrast optimized for extreme readability and real-time data scanning. Glowing accents and sharp edges feel dangerous and authoritative.
+                </div>
+                <div class="palette-specs">
+                    <span>Primary: Neon Cyan (#00f0ff)</span>
+                    <span>Accent: Hot Magenta (#ff00ff)</span>
+                    <span>Mood: Bold, energetic, electric</span>
+                    <span>Typography: Inter Bold + JetBrains Mono</span>
+                </div>
+            </div>
+
+            <div class="dashboard">
+                <div class="dashboard-content">
+                    <div class="dashboard-header">
+                        <span class="dashboard-title">Oracle Price Feed Monitor</span>
+                        <span class="status-badge">LIVE</span>
+                    </div>
+
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">SOL/USD Confidence</div>
+                            <div class="metric-value">98.2%</div>
+                            <div class="metric-change text-success">↑ EXCELLENT</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Pyth Source</div>
+                            <div class="metric-value">$142.50</div>
+                            <div class="metric-change text-muted">+2.3% / 45ms</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Switchboard Feed</div>
+                            <div class="metric-value">$141.87</div>
+                            <div class="metric-change text-muted">+2.1% / 120ms</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Anomaly Detect</div>
+                            <div class="metric-value">0.43%</div>
+                            <div class="metric-change text-warning">! MONITOR</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-placeholder"></div>
+
+                    <div class="alert-section">
+                        <div class="alert-title">⚡ Real-time Alert</div>
+                        Minor price deviation detected across Pyth/Switchboard. Within normal parameters. Outage risk: 1.2%.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Palette 2: Quantum Protocol -->
+        <div class="palette-section palette-2" id="palette-2">
+            <div>
+                <div class="palette-header">
+                    <span class="palette-name">Quantum Protocol</span>
+                    <span class="palette-vibe">ethereal · mysterious · premium</span>
+                </div>
+                <div class="palette-description">
+                    Sci-fi inspired quantum computing aesthetic. Deep purples and soft violets evoke advanced technology and computational sophistication. High-end, mysterious, premium feel for institutional traders.
+                </div>
+                <div class="palette-specs">
+                    <span>Primary: Soft Violet (#a78bfa)</span>
+                    <span>Accent: Purple Glow (#c4b5fd)</span>
+                    <span>Mood: Premium, technical, mysterious</span>
+                    <span>Typography: Poppins SemiBold + IBM Plex Mono</span>
+                </div>
+            </div>
+
+            <div class="dashboard">
+                <div class="dashboard-content">
+                    <div class="dashboard-header">
+                        <span class="dashboard-title">Oracle Price Feed Monitor</span>
+                        <span class="status-badge">LIVE</span>
+                    </div>
+
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">SOL/USD Confidence</div>
+                            <div class="metric-value">98.2%</div>
+                            <div class="metric-change text-success">↑ EXCELLENT</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Pyth Source</div>
+                            <div class="metric-value">$142.50</div>
+                            <div class="metric-change text-muted">+2.3% / 45ms</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Switchboard Feed</div>
+                            <div class="metric-value">$141.87</div>
+                            <div class="metric-change text-muted">+2.1% / 120ms</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Anomaly Detect</div>
+                            <div class="metric-value">0.43%</div>
+                            <div class="metric-change text-warning">! MONITOR</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-placeholder"></div>
+
+                    <div class="alert-section">
+                        <div class="alert-title">⚛️ Protocol Update</div>
+                        Cross-protocol validation complete. Consensus achieved across 12 validators. Timestamp: 2 seconds ago.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Palette 3: Plasma Analytics -->
+        <div class="palette-section palette-3" id="palette-3">
+            <div>
+                <div class="palette-header">
+                    <span class="palette-name">Plasma Analytics</span>
+                    <span class="palette-vibe">energetic · warm · dynamic</span>
+                </div>
+                <div class="palette-description">
+                    Hot plasma energy aesthetic with amber and orange neons. Perfect for high-frequency trading dashboards and real-time data monitoring. Warm accents create urgency and dynamism.
+                </div>
+                <div class="palette-specs">
+                    <span>Primary: Plasma Orange (#f5a300)</span>
+                    <span>Accent: Bright Amber (#ff7f00)</span>
+                    <span>Mood: Energetic, warm, urgent</span>
+                    <span>Typography: Space Grotesk Bold + Courier Prime</span>
+                </div>
+            </div>
+
+            <div class="dashboard">
+                <div class="dashboard-content">
+                    <div class="dashboard-header">
+                        <span class="dashboard-title">Oracle Price Feed Monitor</span>
+                        <span class="status-badge">LIVE</span>
+                    </div>
+
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">SOL/USD Confidence</div>
+                            <div class="metric-value">98.2%</div>
+                            <div class="metric-change text-success">↑ EXCELLENT</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Pyth Source</div>
+                            <div class="metric-value">$142.50</div>
+                            <div class="metric-change text-muted">+2.3% / 45ms</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Switchboard Feed</div>
+                            <div class="metric-value">$141.87</div>
+                            <div class="metric-change text-muted">+2.1% / 120ms</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Anomaly Detect</div>
+                            <div class="metric-value">0.43%</div>
+                            <div class="metric-change text-warning">! MONITOR</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-placeholder"></div>
+
+                    <div class="alert-section">
+                        <div class="alert-title">🔥 Plasma Spike</div>
+                        High-frequency update detected. 847 transactions/sec across DEX feeds. Confidence maintained at EXCELLENT.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Palette 4: Neural Net -->
+        <div class="palette-section palette-4" id="palette-4">
+            <div>
+                <div class="palette-header">
+                    <span class="palette-name">Neural Net</span>
+                    <span class="palette-vibe">minimal · sharp · monochrome</span>
+                </div>
+                <div class="palette-description">
+                    Minimalist terminal aesthetic with electric lime green on pure black. Inspired by classic matrix-style interfaces and neural network visualizations. Brutal readability, maximum contrast, zero distraction.
+                </div>
+                <div class="palette-specs">
+                    <span>Primary: Electric Lime (#22d642)</span>
+                    <span>Accent: Bright Green (#39e75d)</span>
+                    <span>Mood: Minimal, technical, ultra-sharp</span>
+                    <span>Typography: Roboto Mono Bold + IBM Plex Mono</span>
+                </div>
+            </div>
+
+            <div class="dashboard">
+                <div class="dashboard-content">
+                    <div class="dashboard-header">
+                        <span class="dashboard-title">Oracle Price Feed Monitor</span>
+                        <span class="status-badge">LIVE</span>
+                    </div>
+
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">SOL/USD Confidence</div>
+                            <div class="metric-value">98.2%</div>
+                            <div class="metric-change text-success">↑ EXCELLENT</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Pyth Source</div>
+                            <div class="metric-value">$142.50</div>
+                            <div class="metric-change text-muted">+2.3% / 45ms</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Switchboard Feed</div>
+                            <div class="metric-value">$141.87</div>
+                            <div class="metric-change text-muted">+2.1% / 120ms</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Anomaly Detect</div>
+                            <div class="metric-value">0.43%</div>
+                            <div class="metric-change text-warning">! MONITOR</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-placeholder"></div>
+
+                    <div class="alert-section">
+                        <div class="alert-title">✓ NEURAL CONSENSUS</div>
+                        All validator nodes synchronized. Network latency: 38ms avg. No anomalies detected in last 1M blocks.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Palette 5: Oracle Nexus -->
+        <div class="palette-section palette-5" id="palette-5">
+            <div>
+                <div class="palette-header">
+                    <span class="palette-name">Oracle Nexus</span>
+                    <span class="palette-vibe">premium · warm · trustworthy</span>
+                </div>
+                <div class="palette-description">
+                    Premium institutional aesthetic with deep blue backgrounds and warm gold accents. Evokes trust, sophistication, and financial authority. Perfect for high-value derivatives and risk management dashboards.
+                </div>
+                <div class="palette-specs">
+                    <span>Primary: Warm Gold (#d4a574)</span>
+                    <span>Accent: Soft Amber (#e8b999)</span>
+                    <span>Mood: Premium, warm, trustworthy</span>
+                    <span>Typography: Lora Bold + Fira Code</span>
+                </div>
+            </div>
+
+            <div class="dashboard">
+                <div class="dashboard-content">
+                    <div class="dashboard-header">
+                        <span class="dashboard-title">Oracle Price Feed Monitor</span>
+                        <span class="status-badge">LIVE</span>
+                    </div>
+
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">SOL/USD Confidence</div>
+                            <div class="metric-value">98.2%</div>
+                            <div class="metric-change text-success">↑ EXCELLENT</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Pyth Source</div>
+                            <div class="metric-value">$142.50</div>
+                            <div class="metric-change text-muted">+2.3% / 45ms</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Switchboard Feed</div>
+                            <div class="metric-value">$141.87</div>
+                            <div class="metric-change text-muted">+2.1% / 120ms</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Anomaly Detect</div>
+                            <div class="metric-value">0.43%</div>
+                            <div class="metric-change text-warning">! MONITOR</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-placeholder"></div>
+
+                    <div class="alert-section">
+                        <div class="alert-title">🏛️ NEXUS REPORT</div>
+                        Cross-protocol consensus verified. 99.7% uptime over 30 days. Risk assessment: LOW. Treasury intact.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Palette 6: Void Sentinel -->
+        <div class="palette-section palette-6" id="palette-6">
+            <div>
+                <div class="palette-header">
+                    <span class="palette-name">Void Sentinel</span>
+                    <span class="palette-vibe">deep · mystical · infinite</span>
+                </div>
+                <div class="palette-description">
+                    Deep space aesthetic with navy purples and bright cyan accents. Evokes infinite possibility and cosmic monitoring. Sophisticated and mysterious for advanced threat detection and predictive analytics.
+                </div>
+                <div class="palette-specs">
+                    <span>Primary: Cyan Beacon (#00d4ff)</span>
+                    <span>Accent: Bright Cyan (#00e5ff)</span>
+                    <span>Mood: Deep, mystical, sophisticated</span>
+                    <span>Typography: IBM Plex Sans Bold + Inconsolata</span>
+                </div>
+            </div>
+
+            <div class="dashboard">
+                <div class="dashboard-content">
+                    <div class="dashboard-header">
+                        <span class="dashboard-title">Oracle Price Feed Monitor</span>
+                        <span class="status-badge">LIVE</span>
+                    </div>
+
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">SOL/USD Confidence</div>
+                            <div class="metric-value">98.2%</div>
+                            <div class="metric-change text-success">↑ EXCELLENT</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Pyth Source</div>
+                            <div class="metric-value">$142.50</div>
+                            <div class="metric-change text-muted">+2.3% / 45ms</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Switchboard Feed</div>
+                            <div class="metric-value">$141.87</div>
+                            <div class="metric-change text-muted">+2.1% / 120ms</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Anomaly Detect</div>
+                            <div class="metric-value">0.43%</div>
+                            <div class="metric-change text-warning">! MONITOR</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-placeholder"></div>
+
+                    <div class="alert-section">
+                        <div class="alert-title">🛰️ VOID SENTINEL</div>
+                        Cosmic monitoring active. All feed validators in sync. Manipulation score: 0.0 / 100. Status: SECURE.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="selector-section">
+        <h3>📊 Ready to choose your brand? Click a palette above or select here:</h3>
+        <div class="selector-buttons">
+            <button class="selector-btn" onclick="selectPalette(1)">1. Cyberpunk Neon</button>
+            <button class="selector-btn" onclick="selectPalette(2)">2. Quantum Protocol</button>
+            <button class="selector-btn" onclick="selectPalette(3)">3. Plasma Analytics</button>
+            <button class="selector-btn" onclick="selectPalette(4)">4. Neural Net</button>
+            <button class="selector-btn" onclick="selectPalette(5)">5. Oracle Nexus</button>
+            <button class="selector-btn" onclick="selectPalette(6)">6. Void Sentinel</button>
+        </div>
+    </div>
+
+    <script>
+        function scrollToPalette(number) {
+            const element = document.getElementById(`palette-${number}`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                updateToggleButtons(number);
+            }
+        }
+
+        function updateToggleButtons(number) {
+            document.querySelectorAll('.toggle-btn').forEach((btn, idx) => {
+                btn.classList.toggle('active', idx + 1 === number);
+            });
+        }
+
+        function selectPalette(number) {
+            document.querySelectorAll('.selector-btn').forEach((btn, idx) => {
+                btn.classList.toggle('selected', idx + 1 === number);
+            });
+            
+            // In a real implementation, this would save the selection
+            console.log(`Palette ${number} selected`);
+        }
+
+        // Smooth scroll observer to update toggle buttons
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    const number = parseInt(id.split('-')[1]);
+                    updateToggleButtons(number);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.palette-section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  # Time-Series Database
+  influxdb:
+    image: influxdb:2.7-alpine
+    container_name: oracle-sentinel-influxdb
+    ports:
+      - "8086:8086"
+    environment:
+      INFLUXDB_DB: oracle_sentinel
+      INFLUXDB_ADMIN_USER: admin
+      INFLUXDB_ADMIN_PASSWORD: admin123
+      INFLUXDB_HTTP_AUTH_ENABLED: "true"
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Relational Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: oracle-sentinel-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: oracle_sentinel
+      POSTGRES_USER: oracle
+      POSTGRES_PASSWORD: sentinel
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U oracle"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: oracle-sentinel-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Node.js Backend (optional, for local development)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: oracle-sentinel-backend
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      INFLUXDB_URL: http://influxdb:8086
+      DATABASE_URL: postgresql://oracle:sentinel@postgres:5432/oracle_sentinel
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      influxdb:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend/src:/app/src
+    command: npm run dev
+
+volumes:
+  influxdb_data:
+  postgres_data:
+  redis_data:
+
+networks:
+  default:
+    name: oracle-sentinel-network
