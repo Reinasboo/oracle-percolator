@@ -306,10 +306,10 @@ export default function Dashboard() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      <section className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div className="flex-1 max-w-3xl rounded-[28px] border border-white/8 bg-[radial-gradient(circle_at_top_left,rgba(0,217,255,0.14),transparent_30%),linear-gradient(180deg,rgba(10,14,39,0.92),rgba(10,14,39,0.68))] p-6 shadow-[0_30px_100px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+      <section className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_420px] lg:items-start">
+        <div className="min-w-0 rounded-[28px] border border-white/8 bg-[radial-gradient(circle_at_top_left,rgba(0,217,255,0.14),transparent_30%),linear-gradient(180deg,rgba(10,14,39,0.92),rgba(10,14,39,0.68))] p-6 shadow-[0_30px_100px_rgba(0,0,0,0.35)] backdrop-blur-xl">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-6 lg:justify-start">
-            <div className="max-w-2xl space-y-4">
+            <div className="space-y-4 max-w-[62ch]">
               <div className="inline-flex items-center gap-2 rounded-full border border-[rgba(0,217,255,0.18)] bg-[rgba(0,217,255,0.08)] px-3 py-1 text-xs uppercase tracking-[0.24em] text-[#7cecff]">
                 Oracle Sentinel demo
               </div>
