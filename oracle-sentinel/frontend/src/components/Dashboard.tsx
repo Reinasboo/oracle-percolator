@@ -308,7 +308,7 @@ export default function Dashboard() {
     <div className="mx-auto max-w-6xl space-y-6">
       <section className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="flex-1 max-w-3xl rounded-[28px] border border-white/8 bg-[radial-gradient(circle_at_top_left,rgba(0,217,255,0.14),transparent_30%),linear-gradient(180deg,rgba(10,14,39,0.92),rgba(10,14,39,0.68))] p-6 shadow-[0_30px_100px_rgba(0,0,0,0.35)] backdrop-blur-xl">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-6 lg:justify-start">
             <div className="max-w-2xl space-y-4">
               <div className="inline-flex items-center gap-2 rounded-full border border-[rgba(0,217,255,0.18)] bg-[rgba(0,217,255,0.08)] px-3 py-1 text-xs uppercase tracking-[0.24em] text-[#7cecff]">
                 Oracle Sentinel demo
@@ -320,19 +320,19 @@ export default function Dashboard() {
             </div>
 
             <div className="w-full lg:w-[420px] grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
-              <div className="rounded-2xl border border-white/8 bg-white/5 px-3 py-3">
+              <div className="rounded-2xl border border-white/8 bg-white/5 px-3 py-3 w-32 sm:w-36">
                 <div className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Assets</div>
                 <div className="mt-1 text-2xl font-extrabold text-[var(--color-apex)]">{feeds.length}</div>
               </div>
-              <div className="rounded-2xl border border-white/8 bg-white/5 px-3 py-3">
+              <div className="rounded-2xl border border-white/8 bg-white/5 px-3 py-3 w-32 sm:w-36">
                 <div className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Avg conf.</div>
                 <div className="mt-1 text-2xl font-extrabold text-[var(--color-apex)]">{Math.round(averageConfidence * 100)}%</div>
               </div>
-              <div className="rounded-2xl border border-white/8 bg-white/5 px-3 py-3">
+              <div className="rounded-2xl border border-white/8 bg-white/5 px-3 py-3 w-32 sm:w-36">
                 <div className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Median latency</div>
                 <div className="mt-1 text-2xl font-extrabold text-[var(--color-apex)]">{medianLatency}ms</div>
               </div>
-              <div className="rounded-2xl border border-white/8 bg-white/5 px-3 py-3">
+              <div className="rounded-2xl border border-white/8 bg-white/5 px-3 py-3 w-32 sm:w-36">
                 <div className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Alerts</div>
                 <div className="mt-1 text-2xl font-extrabold text-[var(--color-apex)]">{activeAlerts}</div>
               </div>
