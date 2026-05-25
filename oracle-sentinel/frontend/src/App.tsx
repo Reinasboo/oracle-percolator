@@ -8,8 +8,8 @@ export default function App() {
       <div className="pointer-events-none absolute inset-0 opacity-40 [background-image:linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:72px_72px]" />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_50%_0%,rgba(56,221,251,0.14),transparent_55%)]" />
       <Navbar />
-      <main className="relative mx-auto max-w-7xl px-4 py-6 md:px-6 lg:px-8">
-        <Dashboard />
+      <main className="relative mx-auto max-w-6xl px-4 py-6 md:px-6 lg:px-8">
+          <Dashboard />
       </main>
     </div>
   )

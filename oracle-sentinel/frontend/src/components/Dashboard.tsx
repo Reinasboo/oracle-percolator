@@ -305,7 +305,7 @@ export default function Dashboard() {
   const activeAlerts = alerts.length
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-6xl space-y-6">
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-[1.3fr_0.7fr]">
         <div className="rounded-[28px] border border-white/8 bg-[radial-gradient(circle_at_top_left,rgba(0,217,255,0.14),transparent_30%),linear-gradient(180deg,rgba(10,14,39,0.92),rgba(10,14,39,0.68))] p-6 shadow-[0_30px_100px_rgba(0,0,0,0.35)] backdrop-blur-xl">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -314,7 +314,7 @@ export default function Dashboard() {
                 Oracle Sentinel demo
               </div>
               <div>
-                <h1 className="text-3xl font-semibold tracking-tight text-white md:text-4xl">Multi-asset oracle telemetry with live confidence and market quality signals.</h1>
+                <h1 className="text-3xl font-extrabold tracking-tight text-white md:text-4xl">Multi-asset oracle telemetry with live confidence and market quality signals.</h1>
                 <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300 md:text-base">Track multiple assets, inspect source counts, latency, spread, deviation, and anomaly risk, and move between feeds without losing the broader market picture.</p>
               </div>
             </div>
@@ -322,19 +322,19 @@ export default function Dashboard() {
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:w-[420px] lg:grid-cols-2 xl:grid-cols-4">
               <div className="rounded-2xl border border-white/8 bg-white/5 px-3 py-3">
                 <div className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Assets</div>
-                <div className="mt-1 text-2xl font-semibold text-white">{feeds.length}</div>
+                <div className="mt-1 text-2xl font-extrabold text-[var(--color-apex)]">{feeds.length}</div>
               </div>
               <div className="rounded-2xl border border-white/8 bg-white/5 px-3 py-3">
                 <div className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Avg conf.</div>
-                <div className="mt-1 text-2xl font-semibold text-white">{Math.round(averageConfidence * 100)}%</div>
+                <div className="mt-1 text-2xl font-extrabold text-[var(--color-apex)]">{Math.round(averageConfidence * 100)}%</div>
               </div>
               <div className="rounded-2xl border border-white/8 bg-white/5 px-3 py-3">
                 <div className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Median latency</div>
-                <div className="mt-1 text-2xl font-semibold text-white">{medianLatency}ms</div>
+                <div className="mt-1 text-2xl font-extrabold text-[var(--color-apex)]">{medianLatency}ms</div>
               </div>
               <div className="rounded-2xl border border-white/8 bg-white/5 px-3 py-3">
                 <div className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Alerts</div>
-                <div className="mt-1 text-2xl font-semibold text-white">{activeAlerts}</div>
+                <div className="mt-1 text-2xl font-extrabold text-[var(--color-apex)]">{activeAlerts}</div>
               </div>
             </div>
           </div>
@@ -345,7 +345,7 @@ export default function Dashboard() {
             <div className="text-xs uppercase tracking-[0.24em] text-slate-400">Selected feed</div>
             <div className="mt-2 text-3xl font-semibold tracking-tight text-white">{selectedFeed?.feed_name ?? 'Live feed'}</div>
             <div className={`mt-2 text-sm font-medium ${trendChange >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}>{selectedFeed ? formatPercent(trendChange) : '—'}</div>
-            <div className="mt-4 font-mono text-2xl font-semibold tabular-nums text-white">${formatPrice(latestPrice)}</div>
+            <div className="mt-4 font-mono text-2xl font-extrabold tabular-nums text-[var(--color-apex)]">${formatPrice(latestPrice)}</div>
           </div>
           <div className="flex items-center justify-center rounded-[28px] border border-white/8 bg-white/4 p-4 backdrop-blur-xl">
             <ConfidenceGauge value={latestConfidence} />
@@ -385,7 +385,7 @@ export default function Dashboard() {
 
               <div className="mt-4 flex items-end justify-between gap-4">
                 <div>
-                  <div className="font-mono text-2xl font-semibold tabular-nums text-white">${formatPrice(feed.price)}</div>
+                  <div className="font-mono text-2xl font-extrabold tabular-nums text-[var(--color-apex)]">${formatPrice(feed.price)}</div>
                   <div className={`mt-1 text-sm font-medium ${assetDelta >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}>
                     {assetDelta >= 0 ? '+' : ''}{assetDelta.toFixed(2)}%
                   </div>

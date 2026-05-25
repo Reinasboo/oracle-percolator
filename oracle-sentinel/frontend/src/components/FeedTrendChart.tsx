@@ -99,11 +99,11 @@ export default function FeedTrendChart({feed}: FeedTrendChartProps) {
           <div className="grid grid-cols-2 gap-3 text-right">
             <div className="rounded-2xl border border-white/8 bg-white/4 px-3 py-2">
               <div className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Price</div>
-              <div className="mt-1 font-mono text-lg font-semibold tabular-nums text-white">${formatPrice(feed.price)}</div>
+              <div className="mt-1 font-mono text-lg font-extrabold tabular-nums text-[var(--color-apex)]">${formatPrice(feed.price)}</div>
             </div>
             <div className="rounded-2xl border border-white/8 bg-white/4 px-3 py-2">
               <div className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Confidence</div>
-              <div className="mt-1 font-mono text-lg font-semibold tabular-nums text-white">{Math.round(feed.confidence * 100)}%</div>
+              <div className="mt-1 font-mono text-lg font-extrabold tabular-nums text-white">{Math.round(feed.confidence * 100)}%</div>
             </div>
           </div>
         ) : null}

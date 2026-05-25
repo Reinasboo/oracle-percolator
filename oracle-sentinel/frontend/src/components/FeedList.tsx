@@ -64,7 +64,7 @@ export default function FeedList({feeds, selectedFeedId, onSelectFeed}:{feeds: F
     <Card className="space-y-4 rounded-[28px] border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-5 shadow-[0_18px_60px_rgba(0,0,0,0.18)]">
       <div>
         <div className="text-xs uppercase tracking-[0.24em] text-slate-400">Sample dataset viewer</div>
-        <h3 className="mt-2 text-lg font-semibold text-white">Historical sparks by feed</h3>
+        <h3 className="mt-2 text-lg font-extrabold text-white">Historical sparks by feed</h3>
         <p className="mt-1 text-sm text-slate-300">Each asset keeps a small rolling history plus the oracle fields that matter for confidence, latency, and source diversity.</p>
       </div>
 
@@ -95,7 +95,7 @@ export default function FeedList({feeds, selectedFeedId, onSelectFeed}:{feeds: F
                     {isSelected ? <span className="rounded-full border border-[rgba(0,217,255,0.22)] bg-[rgba(0,217,255,0.12)] px-2 py-0.5 text-[10px] uppercase tracking-[0.2em] text-[var(--color-apex)]">Selected</span> : null}
                   </div>
                   <div className="mt-1 flex items-baseline gap-2">
-                    <div className="font-mono text-base font-semibold tabular-nums text-white sm:text-lg">${formatPrice(currentPrice)}</div>
+                    <div className="font-mono text-base font-extrabold tabular-nums text-[var(--color-apex)] sm:text-lg">${formatPrice(currentPrice)}</div>
                     <div className={`text-xs font-medium ${priceChange >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}>
                       {priceChange >= 0 ? '+' : ''}{priceChange.toFixed(2)}%
                     </div>
