@@ -8,18 +8,23 @@ type Feed = {
   base_volatility: number; // percentage fraction example 0.02 = 2%
   last_updated: number;
   confidence: number; // 0..1
+  source_count: number;
+  venue: string;
 };
 
 function seedFeeds(): Feed[] {
   const now = Date.now();
   return [
-    { feed_id: 'SOL/USD', feed_name: 'SOL / USDC', price: 152.3, base_volatility: 0.02, last_updated: now, confidence: 0.92 },
-    { feed_id: 'BTC/USD', feed_name: 'BTC / USD', price: 67600, base_volatility: 0.01, last_updated: now, confidence: 0.95 },
-    { feed_id: 'ETH/USD', feed_name: 'ETH / USD', price: 3200.5, base_volatility: 0.015, last_updated: now, confidence: 0.94 },
-    { feed_id: 'USDC/USD', feed_name: 'USDC / USD', price: 1.0002, base_volatility: 0.0001, last_updated: now, confidence: 0.99 },
-    { feed_id: 'RAY/USD', feed_name: 'RAY / USD', price: 7.45, base_volatility: 0.035, last_updated: now, confidence: 0.85 },
-    { feed_id: 'STOXX50/EUR', feed_name: 'STOXX50 ETF / EUR', price: 5432.1, base_volatility: 0.008, last_updated: now, confidence: 0.9 },
-    { feed_id: 'SOL_STABLE/USD', feed_name: 'SOL (synthetic) / USD', price: 152.0, base_volatility: 0.03, last_updated: now, confidence: 0.7 },
+    { feed_id: 'SOL/USD', feed_name: 'SOL / USDC', price: 152.3, base_volatility: 0.02, last_updated: now, confidence: 0.92, source_count: 7, venue: 'Pyth + Chainlink' },
+    { feed_id: 'BTC/USD', feed_name: 'BTC / USD', price: 67600, base_volatility: 0.01, last_updated: now, confidence: 0.95, source_count: 9, venue: 'Coinbase + Kraken' },
+    { feed_id: 'ETH/USD', feed_name: 'ETH / USD', price: 3200.5, base_volatility: 0.015, last_updated: now, confidence: 0.94, source_count: 8, venue: 'CEX composite' },
+    { feed_id: 'USDC/USD', feed_name: 'USDC / USD', price: 1.0002, base_volatility: 0.0001, last_updated: now, confidence: 0.99, source_count: 5, venue: 'Stablecoin peg basket' },
+    { feed_id: 'RAY/USD', feed_name: 'RAY / USD', price: 7.45, base_volatility: 0.035, last_updated: now, confidence: 0.85, source_count: 6, venue: 'DEX composite' },
+    { feed_id: 'JUP/USD', feed_name: 'JUP / USD', price: 1.42, base_volatility: 0.04, last_updated: now, confidence: 0.83, source_count: 5, venue: 'Liquid routing venues' },
+    { feed_id: 'mSOL/SOL', feed_name: 'mSOL / SOL', price: 1.027, base_volatility: 0.004, last_updated: now, confidence: 0.97, source_count: 4, venue: 'LST basket' },
+    { feed_id: 'PYUSD/USD', feed_name: 'PYUSD / USD', price: 0.9998, base_volatility: 0.00015, last_updated: now, confidence: 0.98, source_count: 4, venue: 'Peg monitor' },
+    { feed_id: 'STOXX50/EUR', feed_name: 'STOXX50 ETF / EUR', price: 5432.1, base_volatility: 0.008, last_updated: now, confidence: 0.9, source_count: 6, venue: 'EU index basket' },
+    { feed_id: 'SOL_STABLE/USD', feed_name: 'SOL (synthetic) / USD', price: 152.0, base_volatility: 0.03, last_updated: now, confidence: 0.7, source_count: 4, venue: 'Synthetic monitor' },
   ];
 }
 
@@ -57,6 +62,26 @@ export function startDemoSocket(mockSocket: any, options: {tickMs?: number, anom
     return c;
   }
 
+  function computeLatency(feed: Feed, pctMove: number) {
+    const noise = Math.abs(pctMove) * 520;
+    return Math.round(55 + feed.base_volatility * 1000 + noise + Math.random() * 35);
+  }
+
+  function computeSpread(feed: Feed, pctMove: number) {
+    return Number((Math.max(0.01, feed.base_volatility * 28 + Math.abs(pctMove) * 12)).toFixed(2));
+  }
+
+  function computeDeviation(feed: Feed, pctMove: number) {
+    return Number((Math.abs(pctMove) * 10000 + Math.max(0.5, feed.base_volatility * 180)).toFixed(1));
+  }
+
+  function computeAnomalyScore(feed: Feed, confidence: number, pctMove: number) {
+    const volatilityPenalty = Math.min(1, Math.abs(pctMove) * 8);
+    const confidencePenalty = 1 - confidence;
+    const spreadPenalty = Math.min(1, feed.base_volatility * 12);
+    return Number(Math.max(0, Math.min(1, volatilityPenalty * 0.5 + confidencePenalty * 0.35 + spreadPenalty * 0.15)).toFixed(2));
+  }
+
   // Emit initial snapshot
   feeds.forEach(f => {
     mockSocket.emit('price_update', {
@@ -64,6 +89,12 @@ export function startDemoSocket(mockSocket: any, options: {tickMs?: number, anom
       feed_name: f.feed_name,
       price: f.price,
       confidence: f.confidence,
+        source_count: f.source_count,
+        venue: f.venue,
+        latency_ms: computeLatency(f, 0),
+        spread_bps: computeSpread(f, 0),
+        deviation_bps: computeDeviation(f, 0),
+        anomaly_score: computeAnomalyScore(f, f.confidence, 0),
       timestamp: new Date().toISOString(),
     });
 
@@ -72,6 +103,10 @@ export function startDemoSocket(mockSocket: any, options: {tickMs?: number, anom
       confidence: f.confidence,
       confidence_interpretation: f.confidence > 0.9 ? 'excellent' : f.confidence > 0.8 ? 'good' : 'caution',
       recommendation: f.confidence > 0.8 ? 'no action' : 'monitor',
+        latency_ms: computeLatency(f, 0),
+        source_count: f.source_count,
+        spread_bps: computeSpread(f, 0),
+        deviation_bps: computeDeviation(f, 0),
     });
   });
 
@@ -110,6 +145,10 @@ export function startDemoSocket(mockSocket: any, options: {tickMs?: number, anom
       const newConf = computeConfidence(f, recentVolatility, lastMovePct);
       f.confidence = newConf;
       f.last_updated = Date.now();
+      const latencyMs = computeLatency(f, lastMovePct);
+      const spreadBps = computeSpread(f, lastMovePct);
+      const deviationBps = computeDeviation(f, lastMovePct);
+      const anomalyScore = computeAnomalyScore(f, newConf, lastMovePct);
 
       // Emit price update
       mockSocket.emit('price_update', {
@@ -117,6 +156,12 @@ export function startDemoSocket(mockSocket: any, options: {tickMs?: number, anom
         feed_name: f.feed_name,
         price: f.price,
         confidence: f.confidence,
+        source_count: f.source_count,
+        venue: f.venue,
+        latency_ms: latencyMs,
+        spread_bps: spreadBps,
+        deviation_bps: deviationBps,
+        anomaly_score: anomalyScore,
         timestamp: new Date().toISOString(),
       });
 
@@ -126,6 +171,10 @@ export function startDemoSocket(mockSocket: any, options: {tickMs?: number, anom
         confidence: f.confidence,
         confidence_interpretation: f.confidence > 0.95 ? 'excellent' : f.confidence > 0.85 ? 'good' : f.confidence > 0.7 ? 'caution' : 'warning',
         recommendation: f.confidence > 0.8 ? 'no action' : 'review sources',
+        latency_ms: latencyMs,
+        source_count: f.source_count,
+        spread_bps: spreadBps,
+        deviation_bps: deviationBps,
       });
 
       // Occasionally emit anomaly/outage
@@ -137,6 +186,8 @@ export function startDemoSocket(mockSocket: any, options: {tickMs?: number, anom
           predicted_outage_window_end: new Date(Date.now() + 1000*60*5).toISOString(),
           estimated_recovery_time_minutes: Math.round(Math.random()*60),
           recent_incidents: [],
+          latency_ms: latencyMs,
+          anomaly_score: anomalyScore,
         });
       }
 
