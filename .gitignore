@@ -1,0 +1,10 @@
+# Ignore product ideas draft file
+PRODUCT_IDEAS.md
+
+# General ignores
+node_modules/
+.env
+.env.local
+.DS_Store
+.vscode/
+.idea/
