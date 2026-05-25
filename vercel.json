@@ -1,0 +1,6 @@
+{
+  "version": 2,
+  "installCommand": "cd oracle-sentinel/frontend && pnpm install",
+  "buildCommand": "cd oracle-sentinel/frontend && pnpm build",
+  "outputDirectory": "oracle-sentinel/frontend/dist"
+}
