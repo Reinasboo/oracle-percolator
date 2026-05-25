@@ -319,7 +319,13 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="w-full lg:w-[420px] grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+            
+          </div>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-1 w-full lg:max-w-[420px]">
+          <div className="w-full">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
               <div className="rounded-2xl border border-white/8 bg-white/5 px-3 py-3 w-32 sm:w-36">
                 <div className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Assets</div>
                 <div className="mt-1 text-2xl font-extrabold text-[var(--color-apex)]">{feeds.length}</div>
@@ -338,9 +344,6 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 w-full lg:max-w-[420px]">
           <div className="rounded-[28px] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-5 shadow-[0_12px_40px_rgba(0,0,0,0.18)]">
             <div className="text-xs uppercase tracking-[0.24em] text-slate-400">Selected feed</div>
             <div className="mt-2 text-3xl font-semibold tracking-tight text-white">{selectedFeed?.feed_name ?? 'Live feed'}</div>
